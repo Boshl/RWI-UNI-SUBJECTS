@@ -1,0 +1,5 @@
+*.Rhistory
+*.RData
+.Ruserdata
+input_tables
+__pycache__/

@@ -1,0 +1,16 @@
+Version: 1.0
+ProjectId: 80235a48-0f0f-4351-bc29-29dbd03f8955
+
+RestoreWorkspace: Default
+SaveWorkspace: Default
+AlwaysSaveHistory: Default
+
+EnableCodeIndexing: Yes
+UseSpacesForTab: Yes
+NumSpacesForTab: 2
+Encoding: UTF-8
+
+RnwWeave: Sweave
+LaTeX: pdfLaTeX
+
+ProjectName: data_enrichment

@@ -1,0 +1,9 @@
+name: rwi_uni_subjects_env
+channels:
+  - defaults
+dependencies:
+  - opencv
+  - matplotlib
+  - pandas
+  - xlsxwriter
+  - openpyxl
