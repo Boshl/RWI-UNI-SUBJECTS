@@ -14,10 +14,6 @@
 # Short description: Reads in all raw data from StudiBUCH for universities and
 #                    summarizes them.
 #
-# Last Change: 10.02.2025
-#
-# Editor: Serife Yasar
-# E-Mail: Serife.Yasar@rwi-essen.de
 #
 # Software Version: R 4.4.2
 

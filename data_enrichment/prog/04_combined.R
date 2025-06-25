@@ -13,7 +13,7 @@
 #                               - he_namen_for_HS_Nummern.xlsx
 #                               - HS_Nummern.xlsx
 #                               - 01_full_sf_namen_harmonisiert.xlsx
-#                               - studenten-pruefungsstatistik.xlsx
+#                               - studenten-pruefungsstatistik_vcr.xlsx
 #                               - Kopie von StadtOhneAGS.xlsx
 #                               - Kopie von Kopie von 01_full_stadt_namen_harmonisiert_Alina.xlsx
 #                               - kreis_namen_2013.xlsx
@@ -29,11 +29,6 @@
 #
 # Short description: Reads uni and fh panel and generates the full panel.(Panel
 #                    with harmonized HE names/SF/AGS)
-#
-# Last Change: 10.02.2025
-#
-# Editor: Serife Yasar
-# E-Mail: Serife.Yasar@rwi-essen.de
 #
 # Software Version: R 4.4.2
 
@@ -811,7 +806,7 @@ panel <- left_join(panel, sf_namen_harmonisiert, by = "Studienfach")
 
 # Read destatis "Prüfungsstatistik"
 studenten_pruefungsstatistik <- read_excel(
-  "data_input\\studenten-pruefungsstatistik.xlsx"
+  "data_input\\studenten-pruefungsstatistik_vcr.xlsx"
 )
 
 # Rename 3-digit equal 

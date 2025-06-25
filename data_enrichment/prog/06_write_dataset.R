@@ -5,17 +5,13 @@
 #
 # Filename of Code: 06_write_dataset.R
 #
-# Filename(s) of Input-File(s): - panel.csv
+# Filename(s) of Input-File(s): - panel_corr.csv
 #
 # Filename(s) of Output-File(s): - HEI_and_subjects_1971-1996_v2.dta
 #
 # Short description: This code reads a panel dataset and prepares it for export
 #                    as Stata dta-file
 #
-# Last Change: 10.02.2025
-#
-# Editor: Serife Yasar
-# E-Mail: Serife.Yasar@rwi-essen.de
 #
 # Software Version: R 4.4.2
 
@@ -26,42 +22,59 @@ library(readr)
 library(dplyr)
 library(haven)
 
-final <- read_csv("data_final\\panel.csv")
+final <- read_csv("data_final\\panel_corr.csv")
 
-final <- select(final, Typ, Jahr, HE, Stadt_full_duplicated, Studienfach_orig, 
-                sf_3_code, sf_2_code, sf_1_code, sf_3, sf_2, sf_1, HS_number, 
-                name_for_number, Last_name, HE_Change, AGS, value)
 
-# Reordering variables
-final <- final[,c(2,1,3,12,13,5, 6,7,8,9,10,11,16,4,14,15, 17)]
 
-# Rest of codes has to remain character as it has leading zeros
-final$sf_1_code <- as.numeric(final$sf_1_code)
+#reorder variables
+final <- final %>%
+  select(Year, Type, HE_name_orig, Subject_orig, Study_Type, HE_number, HE_name_destat, HE_name_destat_last, HE_change, Subject, Subject_area, Subject_group, Subject_code, Subject_area_code, Subject_group_code, AGS, Location_name)
 
-# Rename variables
-names(final)[1] <- "Year"
-names(final)[2] <- "Type"
-names(final)[3] <- "HE_name_orig"
-names(final)[4] <- "HE_number"
-names(final)[5] <- "HE_name_destat"
-names(final)[6] <- "Subject_orig"
-names(final)[7] <- "Subject_code"
-names(final)[8] <- "Subject_area_code"
-names(final)[9] <- "Subject_group_code"
-names(final)[10] <- "Subject"
-names(final)[11] <- "Subject_area"
-names(final)[12] <- "Subject_group"
-names(final)[13] <- "AGS"
-names(final)[14] <- "City"
-names(final)[15] <- "HE_name_destat_last"
-names(final)[16] <- "HE_change"
-names(final)[17] <- "Study_Type"
+#Study_Type - so far only numbers
+final$Study_Type <- recode(final$Study_Type,
+                           `1` = "Full study",
+                           `11` = "Full study Winter term (WS) required",
+                           `12` = "Full study Winter term (WS) recommended",
+                           `13` = "Full study Summer term (SS) required",
+                           `2` = "Full study admission-restricted",
+                           `21` = "Full study admission-restricted Winter term (WS) required",
+                           `22` = "Full study admission-restricted Winter term (WS) recommended",
+                           `3` = "Specialization",
+                           `31` = "Specialization Winter term (WS) required",
+                           `32` = "Specialization Winter term (WS) recommended",
+                           `4` = "Specialization admission-restricted",
+                           `5` = "Advanced study",
+                           `51` = "Advanced study Winter term (WS) required",
+                           `52` = "Advanced study Winter term (WS) recommended",
+                           `6` = "Advanced study admission-restricted",
+                           `7` = "Partial study",
+                           `71` = "Partial study Winter term (WS) required",
+                           `72` = "Partial study Winter term (WS) recommended",
+                           `7a` = "Partial study starting from",
+                           `7b` = "Partial study until",
+                           `8` = "Minor subject",
+                           `81` = "Minor subject Winter term (WS) required",
+                           `82` = "Minor subject Winter term (WS) recommended",
+                           `X` = "No new students",
+                           `Xa` = "No new students soon"
+)
 
-# Rename types:
-final$Type <- ifelse(final$Type == "FH", "UAS", final$Type)
-final$Type <- ifelse(final$Type == "Uni", "university", final$Type)
+#recode numeric HE_change to have text:
+final$HE_change <- recode(final$HE_change,
+                          `0` = "No observed change",
+                          `1` = "Change of institution name",
+                          `2` = "Merger or integration (location retains HE number)",
+                          `3` = "Merger or integration (location loses HE number)",
+                          `4` = "Separate campus without its own HE number",
+                          `5` = "Former comprehensive university"
+)
 
+#Without Type "Other"
+#type other is not considered for this publication due to its limited availability and inconsistency
+final <- filter(final, Type != "Other")
 #___________________________________________________________________________####
 # Export                                                                    ####
 
-write_dta(final, "data_final\\HEI_and_subjects_1971-1996_v2.dta")
+
+
+write_dta(final, "data_final\\HEI_and_subjects_1971-1996_v2_saved.dta")

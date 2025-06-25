@@ -3,3 +3,5 @@
 .Ruserdata
 input_tables
 __pycache__/
+data_enrichment/data_final
+data_enrichment/data_output

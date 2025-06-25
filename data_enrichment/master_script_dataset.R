@@ -9,12 +9,8 @@
 #
 # Filename(s) of Output-File(s):
 #
-# Short description: This Script is the Master Script for the StudiBUCH Dataset
+# Short description: This Script is the Master Script for the RWI-UNI-SUBJECTS data set
 #
-# Last Change: 10.02.2025
-#
-# Editor: Serife Yasar
-# E-Mail: Serife.Yasar@rwi-essen.de
 #
 # Software Version: R 4.4.2
 
@@ -35,21 +31,20 @@ source("prog\\03_loop_other.R")
 # 4: Merge 1 and 2 and make many manual adjustments. Result: panel.csv
 source("prog\\04_combined.R") 
 
-# 5: Change panel.csv to the final dataset, a list of all German cities with the
-# first occurrence of HS or SF in StudiBUCH
-source("prog\\05_data_prep_spillover_dplyr.R")
+# 5: update and correct the panel.csv
+source("prog\\05_ags_sf_he_corr.R")
 
-# 6: Write final dataset for publication
+# 6: Write a formatted version of the dataset
 source("prog\\06_write_dataset.R")
 
 # 7: Perform quality control of Excel spreadsheets
 # source("prog\\07_plausibility_check.R")
 
-# 8: Perform quality control and update he final panel dataset
-source("prog\\08_ags_sf_he_check.R")
-
-# 9: Create descriptive statistics
-source("prog\\09_descriptives.R")
+# 8: Create descriptive statistics
+source("prog\\08_descriptives.R")
 print("Deskriptive statistics done")
 
-print("Your master script successfully executed! The final file is saved as 'data_final/HEI_and_subjects_1971-1996_v2_saved.dta'")
+# 9: Further corrections after review and writing the RWI-UNI-SUBJECTS data set
+source("prog\\09_post_corrections.R")
+
+print("Your master script successfully executed! The final file is saved as 'RWI-UNI-SUBJECTS.csv'")

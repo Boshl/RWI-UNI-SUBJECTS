@@ -12,10 +12,6 @@
 # Short description: This code reads a panel dataset and generates the evolution
 #                    of a subject over time
 #
-# Last Change: 10.02.2025
-#
-# Editor: Serife Yasar
-# E-Mail: Serife.Yasar@rwi-essen.de
 #
 # Software Version: R 4.4.2
 
