@@ -46,7 +46,7 @@ library(data.table)
 # Import                                                                    ####
 
 ## Uni                                                                      ####
-
+setwd("N:/StudiBUCH/RWI-UNI-SUBJECTS-main/RWI-UNI-SUBJECTS-main/data_enrichment")
 # Read Uni data 
 uni <- read_excel("data_output\\uni_results.xlsx")
 

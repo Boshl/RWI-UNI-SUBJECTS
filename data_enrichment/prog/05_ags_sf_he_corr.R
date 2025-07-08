@@ -16,12 +16,15 @@
 
 #___________________________________________________________________________####
 # Preparation                                                               ####
+setwd("N:/StudiBUCH/RWI-UNI-SUBJECTS-main/RWI-UNI-SUBJECTS-main/data_enrichment")
 
 library(readxl)
 library(dplyr)
 library(writexl)
 library(haven)
 library(openxlsx)
+library(stringr) 
+library(tidyr)
 
 df <- read.csv("data_final/panel.csv")
 
@@ -94,27 +97,28 @@ df$AGS_name[df$HE_name_orig=="Landsberg FH_gesamt"]<-"Landsberg am Lech"
 df$AGS[df$HE_name_orig=="Bingen FH_gesamt"]<-"07339"
 df$AGS_name[df$HE_name_orig=="Bingen FH_gesamt"]<-"Bingen am Rhein"
 
-df$AGS[df$City=="Oldenburg"]<-"03403"
-df$AGS[df$City=="Göttingen"]<-"03159"
-df$AGS[df$City=="Hagen"]<-"05914"
-df$AGS[df$City=="Halle"]<-"15002"
-df$AGS[df$City=="Weilheim"]<-"08337"
-df$AGS[df$City=="Triesdorf"]<-"09571"
+df$AGS[df$Location_name=="Oldenburg"]<-"03403"
+df$AGS[df$Location_name=="Göttingen"]<-"03159"
+df$AGS[df$Location_name=="Hagen"]<-"05914"
+df$AGS[df$Location_name=="Halle"]<-"15002"
+df$AGS[df$Location_name=="Weilheim"]<-"08337"
+df$AGS[df$Location_name=="Triesdorf"]<-"09571"
+df$AGS[df$Location_name=="Ostfriesland"]<-"03402"
 
-df$City[df$HE_name_destat=="Wiss. H f. Unternehmensführung Vallendar (Priv. U)" & df$Year >= "1988"]<-"Vallendar" #WHU ist im Jahr 1988 nach Vallendar umgezogen
-df$AGS[df$City=="Vallendar" & df$HE_name_destat=="Wiss. H f. Unternehmensführung Vallendar (Priv. U)"]<-"07137"
+df$Location_name[df$HE_name_destat=="Wiss. H f. Unternehmensführung Vallendar (Priv. U)" & df$Year >= "1988"]<-"Vallendar" #WHU ist im Jahr 1988 nach Vallendar umgezogen
+df$AGS[df$Location_name=="Vallendar" & df$HE_name_destat=="Wiss. H f. Unternehmensführung Vallendar (Priv. U)"]<-"07137"
 
 df$AGS[df$HE_name_orig=="Naumburg KH"]<-"15084"
 df$AGS_name[df$HE_name_orig=="Naumburg KH"]<-"Naumburg (Saale)"
 
-df$City[df$City=="Wodel"]<-"Wedel"
-df$City[df$AGS=="04012"]<-"Bremerhaven"
+df$Location_name[df$Location_name=="Wodel"]<-"Wedel"
+df$Location_name[df$AGS=="04012"]<-"Bremerhaven"
 
-df$City[df$HE_name_orig=="Nordostniedersachsen FH_gesamt"]<-"Buxtehude"
+df$Location_name[df$HE_name_orig=="Nordostniedersachsen FH_gesamt"]<-"Buxtehude"
 df$AGS[df$HE_name_orig=="Nordostniedersachsen FH_gesamt"]<- "03359"
 
-df$City[df$HE_name_orig=="Lahr Beruf FH" & df$HE_name_destat=="Allensbach Hochschule Konstanz (Priv. FH)"]<-"Lahr/Schwarzwald" 
-df$AGS[df$City=="Lahr/Schwarzwald"]<-"08317"
+df$Location_name[df$HE_name_orig=="Lahr Beruf FH" & df$HE_name_destat=="Allensbach Hochschule Konstanz (Priv. FH)"]<-"Lahr/Schwarzwald" 
+df$AGS[df$Location_name=="Lahr/Schwarzwald"]<-"08317"
 
 df$AGS[df$HE_name_orig=="Eßlingen FH_gesamt"]<-"08116"
 df$AGS_name[df$HE_name_orig=="Eßlingen FH_gesamt"]<-"Esslingen am Neckar"
@@ -235,6 +239,364 @@ df$Subject_area_code[df$Subject_orig=="Journalistik D"]<-"34"
 df$Subject_area[df$Subject_orig=="Journalistik D"]<-"Kommunikationswissenschaft/Publizistik"
 df$Subject_group_code[df$Subject_orig=="Journalistik D"]<-"3"
 df$Subject_group[df$Subject_orig=="Journalistik D"]<-"Rechts- Wirtschafts- und Sozialwissenschaften"
+
+
+
+# Corrections                                                     ####
+
+##Koblenz-Landau####
+
+df <- df %>%
+  mutate(HE_name_orig = case_when(
+    HE_name_orig == "Koblenz-Landau U" ~ "Koblenz U,Landau U",  #Preparation for separate_rows
+    TRUE ~ HE_name_orig
+  )) %>%
+  separate_rows(HE_name_orig, sep = ",") 
+
+df <- df%>%
+  mutate(HE_name_orig = ifelse(HE_name_orig == "Koblenz", "Koblenz U", HE_name_orig))
+
+
+df <- df %>%
+  mutate(AGS = ifelse(HE_name_orig == "Koblenz U", "07111", AGS))
+
+df <- df %>%
+  mutate(AGS = ifelse(HE_name_orig == "Landau U", "07312", AGS))
+
+
+df <- df %>%
+  mutate(Location_name = case_when(
+    HE_name_orig == "Landau U" ~ "Landau",
+    HE_name_orig == "Koblenz U" ~ "Koblenz",
+    TRUE ~ Location_name
+  ))
+
+
+
+
+
+#STEP 3: Check for Missing Values in 1-Digit Codes###########################
+df %>% 
+  summarise(missing = sum(is.na(`Subject_group_code`)))
+
+fehlen <- df %>% filter(is.na(`Subject_group_code`))
+View(fehlen)
+
+#Match Missing Values*********************************************************
+##Wirtschafts- und Betriebstechnik####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Wirtschafts- und Betriebstechnik", "Ingenieurwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Wirtschafts- und Betriebstechnik", "8", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Wirtschafts- und Betriebstechnik", "Wirtschaftsingenieurwesen mit ingenieurwiss. Schwerpunkt", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Wirtschafts- und Betriebstechnik", "70", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Wirtschafts- und Betriebstechnik", "Wirtschaftsingenieurwesen mit ingenieurwiss. Schwerpunkt", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Wirtschafts- und Betriebstechnik", "370", Subject_code))
+
+##Technische Betriebswirtschaft####
+#Also part of Industrial Engineering
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Technische Betriebswirtschaft", "Ingenieurwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Technische Betriebswirtschaft", "8", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Technische Betriebswirtschaft", "Wirtschaftsingenieurwesen mit ingenieurwiss. Schwerpunkt", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Technische Betriebswirtschaft", "70", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Technische Betriebswirtschaft", "Wirtschaftsingenieurwesen mit ingenieurwiss. Schwerpunkt", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Technische Betriebswirtschaft", "370", Subject_code))
+
+##Schulgartenunterricht LA GS####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Schulgartenunterricht LA GS", "Rechts-, Wirtschafts- und Sozialwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Schulgartenunterricht LA GS", "3", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Schulgartenunterricht LA GS", "Erziehungswissenschaften", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Schulgartenunterricht LA GS", "33", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Schulgartenunterricht LA GS", "Sachunterricht (einschl. Schulgarten)", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Schulgartenunterricht LA GS", "254", Subject_code))
+
+
+##Sachunterricht LA SoS####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Sachunterricht LA SoS", "Rechts-, Wirtschafts- und Sozialwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Sachunterricht LA SoS", "3", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Sachunterricht LA SoS", "Erziehungswissenschaften", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Sachunterricht LA SoS", "33", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Sachunterricht LA SoS", "Sachunterricht (einschl. Schulgarten)", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Sachunterricht LA SoS", "254", Subject_code))
+
+
+##Sachunterricht LA PrimarS####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Sachunterricht LA PrimarS", "Rechts-, Wirtschafts- und Sozialwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Sachunterricht LA PrimarS", "3", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Sachunterricht LA PrimarS", "Erziehungswissenschaften", Subject_area))
+
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Sachunterricht LA PrimarS", "33", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Sachunterricht LA PrimarS", "Sachunterricht (einschl. Schulgarten)", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Sachunterricht LA PrimarS", "254", Subject_code))
+
+
+##Sachunterricht LA GS/HS####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Sachunterricht LA GS/HS", "Rechts-, Wirtschafts- und Sozialwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Sachunterricht LA GS/HS", "3", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Sachunterricht LA GS/HS", "Erziehungswissenschaften", Subject_area))
+
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Sachunterricht LA GS/HS", "33", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Sachunterricht LA GS/HS", "Sachunterricht (einschl. Schulgarten)", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Sachunterricht LA GS/HS", "254", Subject_code))
+
+
+##Sachunterricht LA GS####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Sachunterricht LA GS", "Rechts-, Wirtschafts- und Sozialwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Sachunterricht LA GS", "3", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Sachunterricht LA GS", "Erziehungswissenschaften", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Sachunterricht LA GS", "33", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Sachunterricht LA GS", "Sachunterricht (einschl. Schulgarten)", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Sachunterricht LA GS", "254", Subject_code))
+
+
+##Pflege LA BS####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Pflege LA BS", "Humanmedizin/ Gesundheitswissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Pflege LA BS", "5", Subject_group_code))
+
+
+##Logistik####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Logistik", "Rechts-, Wirtschafts- und Sozialwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Logistik", "3", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Logistik", "Wirtschaftswissenschaften", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Logistik", "30", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Logistik", "Betriebwirtschaftslehre", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Logistik", "021", Subject_code))
+
+##Lehramt an Sonderschulen####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Lehramt an Sonderschulen", "Rechts-, Wirtschafts- und Sozialwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Lehramt an Sonderschulen", "3", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Lehramt an Sonderschulen", "Erziehungswissenschaften", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Lehramt an Sonderschulen", "33", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Lehramt an Sonderschulen", "Sonderpädagogik", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Lehramt an Sonderschulen", "190", Subject_code))
+
+
+##Lehramt an Grund- und Hauptschulen####
+#Use 2-digit codes only, since primary and secondary schools have distinct 3-digit classifications
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Lehramt an Grund- und Hauptschulen", "Rechts-, Wirtschafts- und Sozialwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Lehramt an Grund- und Hauptschulen", "3", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Lehramt an Grund- und Hauptschulen", "Erziehungswissenschaften", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Lehramt an Grund- und Hauptschulen", "33", Subject_area_code))
+
+
+##Lehramt an beruflichen Schulen####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Lehramt an beruflichen Schulen", "Rechts-, Wirtschafts- und Sozialwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Lehramt an beruflichen Schulen", "3", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Lehramt an beruflichen Schulen", "Erziehungswissenschaften", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Lehramt an beruflichen Schulen", "33", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Lehramt an beruflichen Schulen", "Berufs- und Wirtschaftspädagogik", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Lehramt an beruflichen Schulen", "270", Subject_code))
+
+
+##Heimat- und Sachunterricht LA GS####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Heimat- und Sachunterricht LA GS", "Rechts-, Wirtschafts- und Sozialwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Heimat- und Sachunterricht LA GS", "3", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Heimat- und Sachunterricht LA GS", "Erziehungswissenschaften", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Heimat- und Sachunterricht LA GS", "33", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Heimat- und Sachunterricht LA GS", "Sachunterricht (einschl. Schulgarten)", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Heimat- und Sachunterricht LA GS", "254", Subject_code))
+
+
+##Hauswirtschaft und Werken LA RS####
+#Hier war ich mir Unsicher, habe aber mal Werkerziehung genommen. Sonst würde ich wieder 3 und dann 33 (also Erziehungswissenschaften) hier nehmen
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Hauswirtschaft und Werken LA RS", "Ingenieurwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Hauswirtschaft und Werken LA RS", "8", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Hauswirtschaft und Werken LA RS", "Gestaltung", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Hauswirtschaft und Werken LA RS", "76", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Hauswirtschaft und Werken LA RS", "Werkerziehung", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Hauswirtschaft und Werken LA RS", "176", Subject_code))
+
+
+##Hauswirtschaft und Werken LA HS/RS####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Hauswirtschaft und Werken LA HS/RS", "Ingenieurwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Hauswirtschaft und Werken LA HS/RS", "8", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Hauswirtschaft und Werken LA HS/RS", "Gestaltung", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Hauswirtschaft und Werken LA HS/RS", "76", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Hauswirtschaft und Werken LA HS/RS", "Werkerziehung", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Hauswirtschaft und Werken LA HS/RS", "176", Subject_code))
+
+
+##Hauswirtschaft und Werken LA GS/HS####
+df <- df %>%
+  mutate(Subject_group = ifelse(Subject_orig == "Hauswirtschaft und Werken LA GS/HS", "Ingenieurwissenschaften", Subject_group))
+
+df <- df %>%
+  mutate(Subject_group_code = ifelse(Subject_orig == "Hauswirtschaft und Werken LA GS/HS", "8", Subject_group_code))
+
+df <- df %>%
+  mutate(Subject_area = ifelse(Subject_orig == "Hauswirtschaft und Werken LA GS/HS", "Gestaltung", Subject_area))
+
+df <- df %>%
+  mutate(Subject_area_code = ifelse(Subject_orig == "Hauswirtschaft und Werken LA GS/HS", "76", Subject_area_code))
+
+df <- df %>%
+  mutate(Subject = ifelse(Subject_orig == "Hauswirtschaft und Werken LA GS/HS", "Werkerziehung", Subject))
+
+df <- df %>%
+  mutate(Subject_code = ifelse(Subject_orig == "Hauswirtschaft und Werken LA GS/HS", "176", Subject_code))
+
+
+
+##Additional Error Handling####
+#"Wirtschaftsinqenieurwesen" → "Wirtschaftsingenieurwesen":
+df<- df %>%
+  mutate(`Subject_orig` = case_when(
+    `Subject_orig` == "Wirtschaftsinqenieurwesen" ~ "Wirtschaftsingenieurwesen",
+    TRUE ~ `Subject_orig`  # Behält alle anderen Werte unverändert bei
+  ))
+
+
 
 #___________________________________________________________________________####
 # Export                                                                    ####

@@ -7,10 +7,10 @@
 #
 # Filename(s) of Input-File(s): - HEI_and_subjects_1971-1996_v2_saved.dta
 #
-# Filename(s) of Output-File(s): - RWI-UNI-SUBJECTS.dta
+# Filename(s) of Output-File(s): - RWI-UNI-SUBJECTS_pre_isced.csv
 #
-# Short description: This code corrects mistakes and deals with errors noticed
-                    #by reviewers; it then writes the final data set
+# Short description: This code corrects mistakes and deals with further errors
+#                     mainly regarding the missings of HE_name_orig
 #
 #
 # Software Version: R 4.4.2
@@ -21,16 +21,18 @@ library(readr)
 library(dplyr)
 library(haven)
 
+
+
 final_scientific_data <- read_dta("data_final\\HEI_and_subjects_1971-1996_v2_saved.dta")
 
 
 # Correct mistakes in HE_name_orig 
 #University Hannover in 1971 is Hannover TU
 replacement <- unique(final_scientific_data[final_scientific_data$Location_name == "Hannover" & final_scientific_data$Year == 1972 & final_scientific_data$HE_name_orig == "Hannover TU", 
-                                            c("HE_name_orig", "HE_number", "HE_name_destat", "HE_change")])
+                                            c("HE_name_orig", "HE_number", "HE_name_destat", "HE_change", "AGS")])
 
 final_scientific_data[final_scientific_data$Location_name == "Hannover" & final_scientific_data$Year == 1971 & final_scientific_data$HE_name_orig =="", 
-                      c("HE_name_orig", "HE_number", "HE_name_destat", "HE_change")] <- replacement
+                      c("HE_name_orig", "HE_number", "HE_name_destat", "HE_change", "AGS")] <- replacement
 
 
 #UAS in "Brandenburg an der Havel" was also mistakenly empty
@@ -39,7 +41,8 @@ final_scientific_data <- final_scientific_data %>%
     HE_name_orig = ifelse(Location_name == "Brandenburg an der Havel", "Brandenburg FH", HE_name_orig),
     HE_name_destat = ifelse(Location_name == "Brandenburg an der Havel", "Technische Hochschule Brandenburg (FH)", HE_name_destat),
     HE_number = ifelse(Location_name == "Brandenburg an der Havel", 7910, HE_number),
-    HE_change = ifelse(Location_name == "Brandenburg an der Havel", "No observed change", HE_change)
+    HE_change = ifelse(Location_name == "Brandenburg an der Havel", "No observed change", HE_change),
+    AGS = ifelse(Location_name == "Brandenburg an der Havel", "12051", AGS)
   )
 
 
@@ -72,10 +75,13 @@ final_scientific_data$HE_change <- ifelse(final_scientific_data$HE_number == "" 
 #replace "_gesamt" with "_total" in HE_name_orig to have the English version
 final_scientific_data$HE_name_orig <- sub("_gesamt$", "_total", final_scientific_data$HE_name_orig)
 
+
+
+
 #___________________________________________________________________________####
 # Export                                                                    ####
 
-write_csv(final_scientific_data, "data_final\\RWI-UNI-SUBJECTS.csv")
+write_csv(final_scientific_data, "data_final\\RWI-UNI-SUBJECTS_pre_isced.csv")
 
 
 
