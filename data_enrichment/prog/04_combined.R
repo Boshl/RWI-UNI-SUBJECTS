@@ -14,8 +14,8 @@
 #                               - HS_Nummern.xlsx
 #                               - 01_full_sf_namen_harmonisiert.xlsx
 #                               - studenten-pruefungsstatistik_vcr.xlsx
-#                               - Kopie von StadtOhneAGS.xlsx
-#                               - Kopie von Kopie von 01_full_stadt_namen_harmonisiert_Alina.xlsx
+#                               - StadtOhneAGS.xlsx
+#                               - 01_full_stadt_namen_harmonisiert_v2.xlsx
 #                               - kreis_namen_2013.xlsx
 #
 # Filename(s) of Output-File(s): - 01_full_sf_namen.xlsx 
@@ -775,6 +775,14 @@ he_namen_for_HS_Nummern <- left_join(
   by = "name_for_number"
 )
 
+
+#there are Gesamthochschulen which appear twice in list (as both types)
+#for matching:
+#keep only first appearance of Essen GH, Neuendettelsau GH, Paderborn U-GH, Siegen U-GH
+he_namen_for_HS_Nummern <- he_namen_for_HS_Nummern %>%
+  filter(!(he_namen_harmonisiert %in% c("Essen GH", "Neuendettelsau GH", "Paderborn U-GH", "Siegen U-GH") &
+             duplicated(he_namen_harmonisiert)))
+
 # Match that to the panel dataset
 panel<- left_join(panel, he_namen_for_HS_Nummern, by = "he_namen_harmonisiert")
 
@@ -796,7 +804,9 @@ sf_namen_harmonisiert <- read_excel(
 
 # Rename name in excel(sf_namen)
 sf_namen_harmonisiert$Studienfach <- sf_namen_harmonisiert$sf_namen
-
+sf_namen_harmonisiert <- sf_namen_harmonisiert %>%
+  filter(!(Studienfach %in% c("Musik (Lehramt)") &
+             duplicated(Studienfach)))
 
 # In the dataset panel "sf_names_harmonized_systematics" specifies the final sf,
 # sf from StudiBUCH has a counterpart from systematics manually
@@ -957,7 +967,7 @@ daten <- data.frame(Stadt = stadtOhneAGS)
 writexl::write_xlsx(daten, "data_output\\StadtOhneAGS.xlsx")
 
 # Read the data and replace AGS with the value in Excel  
-stadtOhneAGS_ko <- read_excel("data_input\\Kopie von StadtOhneAGS.xlsx")
+stadtOhneAGS_ko <- read_excel("data_input\\StadtOhneAGS.xlsx")
 
 # If AGS in panel is 0, replace it with the variable ags from stadtOhneAGS_ko
 panel$AGS <- ifelse(
@@ -976,7 +986,7 @@ writexl::write_xlsx(double, "data_output\\double.xlsx")
 ## AGS1                                                                     ####
 
 double_false <- read_excel(
-  "data_input\\Kopie von Kopie von 01_full_stadt_namen_harmonisiert_Alina.xlsx"
+  "data_input\\01_full_stadt_namen_harmonisiert_v2.xlsx"
 )
 
 

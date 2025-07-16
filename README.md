@@ -147,10 +147,10 @@ statistics on study subjects:
 - *hochschul_liste_HS-Kompass.xlsx*: Postal data of all higher education
   facilities
 - *HS_Nummern.xlsx*: Matching higher education facility number and name
-- *Kopie von Kopie von 01_full_stadt_namen_harmonisiert_Alina.xlsx*:
+- *01_full_stadt_namen_harmonisiert_v2.xlsx*:
   Manually checked correct matching of higher education facility names
   to harmonized names
-- *Kopie von StadtOhneAGS.xlsx*: Manually collected AGS (German
+- *StadtOhneAGS.xlsx*: Manually collected AGS (German
   administrative reference numbers for municipalities) for observations
   where they were missing
 - *kreis_namen_2013.xlsx*: Names of all German districts (as of 2013)

@@ -66,36 +66,36 @@ df$Type <- ifelse(df$Type == "Uni", "university", df$Type)
 # Corrections (HiWi 1)                                                      ####
 
 df$AGS[df$HE_name_orig=="Weiden FH" & df$HE_name_destat=="Ostbayerische TH Amberg-Weiden in Weiden (FH)"]<-"09363"
-df$AGS_name[df$HE_name_orig=="Weiden FH" & df$HE_name_destat=="Ostbayerische TH Amberg-Weiden in Weiden (FH)"]<-"Weiden in der Oberpfalz"
+df$Location_name[df$HE_name_orig=="Weiden FH" & df$HE_name_destat=="Ostbayerische TH Amberg-Weiden in Weiden (FH)"]<-"Weiden in der Oberpfalz"
 
 df$AGS[df$HE_name_orig=="Hof FH" & df$HE_name_destat=="H für angewandte Wissenschaften Hof in Hof (FH)"]<-"09464"
-df$AGS_name[df$HE_name_orig=="Hof FH" & df$HE_name_destat=="H für angewandte Wissenschaften Hof in Hof (FH)"]<-"Hof"
+df$Location_name[df$HE_name_orig=="Hof FH" & df$HE_name_destat=="H für angewandte Wissenschaften Hof in Hof (FH)"]<-"Hof"
 
 df$AGS[df$HE_name_orig=="Weilheim (Bierbronnen GSA)" & df$HE_name_destat=="Priv. wissenschaftliche H Bierbronnen"]<-"08337"
-df$AGS_name[df$HE_name_orig=="Weilheim (Bierbronnen GSA)" & df$HE_name_destat=="Priv. wissenschaftliche H Bierbronnen"]<-"Weilheim (Baden)"
+df$Location_name[df$HE_name_orig=="Weilheim (Bierbronnen GSA)" & df$HE_name_destat=="Priv. wissenschaftliche H Bierbronnen"]<-"Weilheim (Baden)"
 df$AGS[df$HE_name_orig=="Fachhochschule Ulm in Geislingen" & df$HE_name_destat=="Technische Hochschule Ulm (FH)"]<-"08117"
-df$AGS_name[df$HE_name_orig=="Fachhochschule Ulm in Geislingen" & df$HE_name_destat=="Technische Hochschule Ulm (FH)"]<-"Geislingen an der Steige"
+df$Location_name[df$HE_name_orig=="Fachhochschule Ulm in Geislingen" & df$HE_name_destat=="Technische Hochschule Ulm (FH)"]<-"Geislingen an der Steige"
 
 df$AGS[df$HE_name_orig=="Hochschule Nürtingen in Geislingen (FH)" & df$HE_name_destat=="Hochschule Nürtingen in Geislingen (FH)"]<-"08117"
-df$AGS_name[df$HE_name_orig=="Hochschule Nürtingen in Geislingen (FH)" & df$HE_name_destat=="Hochschule Nürtingen in Geislingen (FH)"]<-"Geislingen an der Steige"
+df$Location_name[df$HE_name_orig=="Hochschule Nürtingen in Geislingen (FH)" & df$HE_name_destat=="Hochschule Nürtingen in Geislingen (FH)"]<-"Geislingen an der Steige"
 
 df$AGS[df$HE_name_orig=="Bingen FH" & df$HE_name_destat=="Technische Hochschule Bingen (FH)"]<-"07339"
-df$AGS_name[df$HE_name_orig=="Bingen FH" & df$HE_name_destat=="Technische Hochschule Bingen (FH)"]<-"Bingen am Rhein"
+df$Location_name[df$HE_name_orig=="Bingen FH" & df$HE_name_destat=="Technische Hochschule Bingen (FH)"]<-"Bingen am Rhein"
 
 df$AGS[df$HE_name_orig=="Schneeberg FH" & df$HE_name_destat=="Westsächsische H Zwickau in Schneeberg (FH)"]<-"14521"
-df$AGS_name[df$HE_name_orig=="Schneeberg FH" & df$HE_name_destat=="Westsächsische H Zwickau in Schneeberg (FH)"]<-"Schneeberg"
+df$Location_name[df$HE_name_orig=="Schneeberg FH" & df$HE_name_destat=="Westsächsische H Zwickau in Schneeberg (FH)"]<-"Schneeberg"
 
 df$AGS[df$HE_name_orig=="Friedberg FH" & df$HE_name_destat=="Techn. H Mittelhessen (THM) in Friedberg (FH)"]<-"06440"
-df$AGS_name[df$HE_name_orig=="Friedberg FH" & df$HE_name_destat=="Techn. H Mittelhessen (THM) in Friedberg (FH)"]<-"Friedberg (Hessen)"
+df$Location_name[df$HE_name_orig=="Friedberg FH" & df$HE_name_destat=="Techn. H Mittelhessen (THM) in Friedberg (FH)"]<-"Friedberg (Hessen)"
 
 df$AGS[df$HE_name_orig=="Friedberg FH_gesamt"]<-"06440"
-df$AGS_name[df$HE_name_orig=="Friedberg FH_gesamt"]<-"Friedberg (Hessen)"
+df$Location_name[df$HE_name_orig=="Friedberg FH_gesamt"]<-"Friedberg (Hessen)"
 
 df$AGS[df$HE_name_orig=="Landsberg FH_gesamt"]<-"09181"
-df$AGS_name[df$HE_name_orig=="Landsberg FH_gesamt"]<-"Landsberg am Lech"
+df$Location_name[df$HE_name_orig=="Landsberg FH_gesamt"]<-"Landsberg am Lech"
 
 df$AGS[df$HE_name_orig=="Bingen FH_gesamt"]<-"07339"
-df$AGS_name[df$HE_name_orig=="Bingen FH_gesamt"]<-"Bingen am Rhein"
+df$Location_name[df$HE_name_orig=="Bingen FH_gesamt"]<-"Bingen am Rhein"
 
 df$AGS[df$Location_name=="Oldenburg"]<-"03403"
 df$AGS[df$Location_name=="Göttingen"]<-"03159"
@@ -109,7 +109,7 @@ df$Location_name[df$HE_name_destat=="Wiss. H f. Unternehmensführung Vallendar (
 df$AGS[df$Location_name=="Vallendar" & df$HE_name_destat=="Wiss. H f. Unternehmensführung Vallendar (Priv. U)"]<-"07137"
 
 df$AGS[df$HE_name_orig=="Naumburg KH"]<-"15084"
-df$AGS_name[df$HE_name_orig=="Naumburg KH"]<-"Naumburg (Saale)"
+df$Location_name[df$HE_name_orig=="Naumburg KH"]<-"Naumburg (Saale)"
 
 df$Location_name[df$Location_name=="Wodel"]<-"Wedel"
 df$Location_name[df$AGS=="04012"]<-"Bremerhaven"
@@ -121,10 +121,10 @@ df$Location_name[df$HE_name_orig=="Lahr Beruf FH" & df$HE_name_destat=="Allensba
 df$AGS[df$Location_name=="Lahr/Schwarzwald"]<-"08317"
 
 df$AGS[df$HE_name_orig=="Eßlingen FH_gesamt"]<-"08116"
-df$AGS_name[df$HE_name_orig=="Eßlingen FH_gesamt"]<-"Esslingen am Neckar"
+df$Location_name[df$HE_name_orig=="Eßlingen FH_gesamt"]<-"Esslingen am Neckar"
 
 df$AGS[df$HE_name_orig=="Biberach FH" & df$HE_name_destat=="Hochschule Biberach a. d. Riss (FH)"]<-"08426"
-df$AGS_name[df$HE_name_orig=="Biberach FH" & df$HE_name_destat=="Hochschule Biberach a. d. Riss (FH)"]<-"Biberach an der Riß"
+df$Location_name[df$HE_name_orig=="Biberach FH" & df$HE_name_destat=="Hochschule Biberach a. d. Riss (FH)"]<-"Biberach an der Riß"
 
 # Corrections (HiWi 2)                                                      ####
 
@@ -241,6 +241,31 @@ df$Subject_group_code[df$Subject_orig=="Journalistik D"]<-"3"
 df$Subject_group[df$Subject_orig=="Journalistik D"]<-"Rechts- Wirtschafts- und Sozialwissenschaften"
 
 
+df$Subject_code[df$Subject_orig=="Informationswesen"] <- "22"
+df$Subject_area_code[df$Subject_orig=="Informationswesen"] <- "6"
+df$Subject_group_code[df$Subject_orig=="Informationswesen"] <- "1"
+df$Subject[df$Subject_orig=="Informationswesen"] <- "Informations- und Bibliothekswissenschaften (nicht für Verwaltungsfachhochschulen)"
+df$Subject_area[df$Subject_orig=="Informationswesen"] <- "Informations- und Bibliothekswissenschaften"
+df$Subject_group[df$Subject_orig=="Informationswesen"] <- "Geisteswissenschaften"
+
+df$Subject_code[df$Subject_orig == "Informationswissenschaft/-technik D"] <- "22"
+df$Subject_area_code[df$Subject_orig == "Informationswissenschaft/-technik D"] <- "6"
+df$Subject_group_code[df$Subject_orig == "Informationswissenschaft/-technik D"] <- "1"
+df$Subject[df$Subject_orig == "Informationswissenschaft/-technik D"] <- "Informations- und Bibliothekswissenschaften (nicht für Verwaltungsfachhochschulen)"
+df$Subject_area[df$Subject_orig == "Informationswissenschaft/-technik D"] <- "Informations- und Bibliothekswissenschaften"
+df$Subject_group[df$Subject_orig == "Informationswissenschaft/-technik D"] <- "Geisteswissenschaften"
+
+df$Subject_code[df$Subject_orig == "Informationswissenschaft/-technik M"] <- "22"
+df$Subject_area_code[df$Subject_orig == "Informationswissenschaft/-technik M"] <- "6"
+df$Subject_group_code[df$Subject_orig == "Informationswissenschaft/-technik M"] <- "1"
+df$Subject[df$Subject_orig == "Informationswissenschaft/-technik M"] <- "Informations- und Bibliothekswissenschaften (nicht für Verwaltungsfachhochschulen)"
+df$Subject_area[df$Subject_orig == "Informationswissenschaft/-technik M"] <- "Informations- und Bibliothekswissenschaften"
+df$Subject_group[df$Subject_orig == "Informationswissenschaft/-technik M"] <- "Geisteswissenschaften"
+
+df$AGS[df$HE_name_orig=="Biberach FH_gesamt"]<-"08426"
+df$Location_name[df$Location_name=="Biberach"]<-"Biberach an der Riß"
+
+df$AGS[df$AGS == "03456" & df$Location_name =="Lage"] <- "05766"
 
 # Corrections                                                     ####
 

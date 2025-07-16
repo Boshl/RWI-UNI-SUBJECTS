@@ -1,14 +1,5 @@
-# erstmal entsprechenden Datensatz für descriptives erstellen:
-# das ist der (veraltete) final_CS_and_HEI_openings_withEast_byCZ.csv
-
-#Code wie er erstellt wurde liegt unter:
-# N:\StudiBUCH\LocalLaborMarket\StudiBuch_data\prog\alt 01 und 01_1 code
-
-
-#rewrite code such that no output file is written and extension is not added
-#01_1 code can be shortened drastically; as i only need the one dataset finalCSandHEI...
-
-
+### Creating descriptives of the Dataset ###
+rm(list = ls())
 
 library(readr)
 library(stringr)
@@ -569,7 +560,7 @@ ggsave("fig\\CS_openings_FH_forScientificDATA.png",
 #### Hochschulen über die Zeit ####
 
 #read RWI-UNI-SUBJECTS
-panel <- read_csv("data_final\\RWI-UNI-SUBJECTS.csv")
+panel <- read_csv("data_final\\RWI-UNI-SUBJECTS_prefinal.csv")
 
 # We are interested in the first appearance of a uni or fh in a district (AGS). 
 # We therefore check the first appearance per district.
